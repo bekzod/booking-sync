@@ -11,7 +11,7 @@ export default Ember.Controller.extend({
   minDate: moment().startOf('day'),
   //centering to first available day
   center: computed('disabledDates', {
-    get(key) {
+    get() {
       let center = moment()
       let disabledDates = this.get('disabledDates')
       for (var i = 0; i < disabledDates.length; i++) {

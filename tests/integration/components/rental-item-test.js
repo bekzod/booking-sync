@@ -7,19 +7,10 @@ moduleForComponent('rental-item', 'Integration | Component | rental item', {
 
 test('it renders', function(assert) {
 
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+  let rental = { name: 'great hotel', image: 'https://kittens/image.png', dailyRate: 12 }
+  this.set('rental', rental)
+  this.render(hbs`{{rental-item rental=rental}}`)
 
-  this.render(hbs`{{rental-item}}`);
-
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#rental-item}}
-      template block text
-    {{/rental-item}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.equal(this.$('.name').text().trim(), 'great hotel $12/day')
+  assert.equal(this.$('img').prop('src'), 'https://kittens/image.png')
 });
