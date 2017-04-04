@@ -1,7 +1,9 @@
 import { Factory, faker } from 'ember-cli-mirage';
 
 export default Factory.extend({
-  name: faker.address.city,
+  name() {
+    return faker.address.city();
+  },
   image: faker.image.cats,
   dailyRate: faker.commerce.price
 });
