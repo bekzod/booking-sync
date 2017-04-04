@@ -3,6 +3,6 @@ import DS from 'ember-data';
 export default DS.Model.extend({
   name: DS.attr('string'),
   image: DS.attr('string'),
-  daily_rate: DS.attr('number'),
+  dailyRate: DS.attr('number'),
   bookings: DS.hasMany('booking')
 });

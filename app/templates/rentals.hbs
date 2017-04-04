@@ -1,8 +1,8 @@
 
-<ul>
+<div class="rental-item-container">
   {{#each model as |rental|}}
-    {{#link-to 'rentals.book' rental tagName='li'}}{{rental.name}}{{/link-to}}
+    {{rental-item rental=rental}}
   {{/each}}
-</ul>
+</div>
 
 {{outlet}}

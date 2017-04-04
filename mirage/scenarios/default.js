@@ -1,4 +1,4 @@
 export default function(server) {
 
-  server.createList('rental', 5);
+  server.createList('rental', 8);
 }

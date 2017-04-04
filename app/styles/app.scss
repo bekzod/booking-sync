@@ -1,0 +1,33 @@
+@import "ember-bootstrap/bootstrap";
+
+.modal-backdrop {
+  background-color: rgba(0,0,0,.3);
+}
+
+div.modal {
+  display: block;
+}
+
+.rental-item-container {
+  text-align: center;
+  padding-top: 100px;
+
+  a.rental-item {
+    display: inline-block;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    margin: 10px;
+    &:hover {
+      background-color: #ddd;
+    }
+    img {
+      width: 200px;
+      height: 200px;
+    }
+    .name {
+      padding: 5px;
+    }
+  }
+}

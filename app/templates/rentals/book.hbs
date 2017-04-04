@@ -1,0 +1,22 @@
+{{#modal-dialog
+  blockBodyScroll=true
+  clickOutsideToClose=true
+  translucentOverlay=true
+  targetAttachment='none'
+  close='close'
+  container-class='modal-dialog'
+  overlay-class="modal-backdrop"
+  wrapper-class='modal in'}}
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" onclick={{action 'close'}} class="close"><span>×</span></button>
+        <h4 class="">Booking {{model.name}}</h4>
+      </div>
+      <div class="modal-body text-center">
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default"><i class="fa fa-repeat"></i> Book</button>
+      </div>
+    </div>
+{{/modal-dialog}}
