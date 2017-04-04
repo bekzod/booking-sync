@@ -6,4 +6,10 @@ export default Ember.Route.extend({
     return this.get('store').findRecord('rental', id)
   },
 
+  setupController(controller, rental) {
+    let booking = this.get('store').createRecord('booking', { rental })
+    controller.set('rental', rental)
+    controller.set('booking', booking)
+  }
+
 });

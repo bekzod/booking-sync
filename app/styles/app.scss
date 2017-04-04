@@ -1,4 +1,5 @@
 @import "ember-bootstrap/bootstrap";
+@import "ember-power-calendar";
 
 .modal-backdrop {
   background-color: rgba(0,0,0,.3);
@@ -27,7 +28,18 @@ div.modal {
       height: 200px;
     }
     .name {
+      color: #666;
+      font-size: 14px;
       padding: 5px;
     }
+  }
+}
+
+.ember-power-calendar {
+  max-width: 300px;
+  margin: 0 auto;
+  background-color: #eee;
+  .ember-power-calendar-row {
+    height: 40px;
   }
 }
