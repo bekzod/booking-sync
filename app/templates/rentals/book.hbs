@@ -15,18 +15,35 @@
       <div class="modal-body text-center">
         <h4>Daily Rate ${{rental.dailyRate}}</h4>
         <h4>Price ${{booking.price}} for {{days}} days</h4>
-        {{#power-calendar-range
-          center=center
-          selected=range
-          minRange=1
-          onCenterChange=(action (mut center) value="date")
-          onSelect=(action 'setRange' value="date") as |calendar|}}
-            {{calendar.nav}}
-            {{calendar.days minDate=minDate disabledDates=disabledDates}}
-        {{/power-calendar-range}}
+        <div class="row">
+          <div class="form-group col-md-6 col-md-offset-3 {{if booking.clientEmail.length (if isEmailValid 'has-success' 'has-error')}}">
+            <input disabled={{isSaving}} type="text" class="form-control" placeholder="Email" value={{booking.clientEmail}} oninput={{action (mut booking.clientEmail) value="target.value"}} >
+          </div>
+        </div>
+        <div class="row">
+          {{#power-calendar-range
+            center=center
+            selected=range
+            minRange=1
+            onCenterChange=(action (mut center) value="date")
+            onSelect=(action 'setRange' value="date") as |calendar|}}
+              {{calendar.nav}}
+              {{calendar.days disabled=true minDate=minDate disabledDates=disabledDates}}
+          {{/power-calendar-range}}
+        </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-default"><i class="fa fa-repeat"></i> Book</button>
+        <button disabled={{not (and days isEmailValid)}} onclick={{action 'book'}} class="btn btn-default"><i class="fa fa-repeat"></i> Book</button>
       </div>
+      {{#if isSaving}}
+        <div class="loading-spinner">
+          <div class="spinner">
+            <div class="spinner__item1"></div>
+            <div class="spinner__item2"></div>
+            <div class="spinner__item3"></div>
+            <div class="spinner__item4"></div>
+          </div>
+        </div>
+      {{/if}}
     </div>
 {{/modal-dialog}}

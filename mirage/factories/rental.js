@@ -4,6 +4,6 @@ export default Factory.extend({
   name() {
     return faker.address.city();
   },
-  image: faker.image.city,
+  image: faker.random.image,
   dailyRate: faker.commerce.price
 });

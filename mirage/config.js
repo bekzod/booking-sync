@@ -5,6 +5,7 @@ export default function() {
   this.get('/rentals');
   this.get('/rentals/:id');
   this.get('/bookings');
+  this.post('/bookings');
     // this.post('/posts');
     // this.get('/posts/:id');
     // this.put('/posts/:id'); // or this.patch

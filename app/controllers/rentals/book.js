@@ -1,11 +1,35 @@
 import Ember from 'ember';
 import moment from 'moment';
 
-const { computed } = Ember
+const { computed, inject } = Ember
+
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 export default Ember.Controller.extend({
-  center: moment(),
+  notification: inject.service('notification-messages'),
+
   minDate: moment().startOf('day'),
+  //centering to first available day
+  center: computed('disabledDates', {
+    get(key) {
+      let center = moment()
+      let disabledDates = this.get('disabledDates')
+      for (var i = 0; i < disabledDates.length; i++) {
+        let disabledDate = disabledDates[i]
+        if (center.isSame(disabledDate, 'day')) {
+          center.add(1, 'day')
+        }
+      }
+      return center;
+    },
+    set(key, val) {
+      return val
+    }
+  }),
+
+  isEmailValid: computed('booking.clientEmail', function() {
+    return EMAIL_REGEX.test(this.get('booking.clientEmail'))
+  }),
 
   range: computed('booking.startAt', 'booking.endAt', {
     get() {
@@ -24,15 +48,17 @@ export default Ember.Controller.extend({
 
   disabledDates: computed('rental.bookings', function() {
     return this.get('rental.bookings').reduce(function(dates, booking) {
-      let startAt = booking.get('startAt')
-      let endAt = booking.get('endAt')
-      let date = moment(startAt)
-      while (date.isBefore(endAt)) {
-        dates.push(date.toDate())
-        date.add(1, 'day')
+      if (!booking.get('isNew')) {
+        let startAt = booking.get('startAt')
+        let endAt = booking.get('endAt')
+        let date = moment(startAt)
+        while (date.isBefore(endAt)) {
+          dates.push(date.toDate())
+          date.add(1, 'day')
+        }
       }
       return dates
-    }, [])
+    }, []).sort((a,b)=> a - b);
   }),
 
   days: computed('booking.startAt', 'booking.endAt', function() {
@@ -54,6 +80,22 @@ export default Ember.Controller.extend({
     setRange(range) {
       this.set('range', range)
       this.calculatePrice()
+    },
+
+    book() {
+      this.set('isSaving', true)
+      this.get('booking').save()
+        .then(()=> {
+          this.get('notification').success('Saved successfully!')
+          this.transitionToRoute('rentals')
+        })
+        .catch((e)=> {
+          console.error(e)
+          this.get('notification').error('Something went wrong, we are working on it')
+        })
+        .finally(()=> {
+          this.set('isSaving', false)
+        })
     },
 
     close() {
