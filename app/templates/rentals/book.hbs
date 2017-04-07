@@ -18,7 +18,7 @@
         <h5>{{#if booking.startAt}}From {{moment-format booking.startAt 'YYYY MMM DD'}}{{/if}} {{#if booking.endAt}}to {{moment-format booking.endAt 'MMM DD'}}{{/if}}&nbsp;</h5>
         <div class="row">
           <div class="form-group col-md-6 col-md-offset-3 {{if booking.clientEmail.length (if isEmailValid 'has-success' 'has-error')}}">
-            <input disabled={{isSaving}} type="text" class="form-control" placeholder="Email" value={{booking.clientEmail}} oninput={{action (mut booking.clientEmail) value="target.value"}} >
+            <input disabled={{isLoading}} type="text" class="form-control" placeholder="Email" value={{booking.clientEmail}} oninput={{action (mut booking.clientEmail) value="target.value"}} >
           </div>
         </div>
         <div class="row">
@@ -38,17 +38,19 @@
             <h4>All Bookings</h4>
             {{#each bookings as |booking|}}
               <div class="booking-item">
-
+                <span class='date'>{{moment-format booking.startAt 'YYYY MMM DD'}}</span> -
+                <span class='date'>{{moment-format booking.endAt 'YYYY MMM DD'}}</span> ({{booking.days}} days)
+                <button disabled={{isLoading}} type="button" onclick={{action 'destroyBooking' booking}} class="close"><span>×</span></button>
               </div>
             {{/each}}
           </div>
         {{/if}}
       </div>
       <div class="modal-footer">
-        <button disabled={{isSaving}} onclick={{action 'close'}} class="btn btn-default">Cancel</button>
+        <button disabled={{isLoading}} onclick={{action 'close'}} class="btn btn-default">Cancel</button>
         <button disabled={{not (and booking.days isEmailValid)}} onclick={{action 'book'}} class="btn btn-primary">Book</button>
       </div>
-      {{#if isSaving}}
+      {{#if isLoading}}
         <div class="loading-spinner">
           <div class="spinner">
             <div class="spinner__item1"></div>

@@ -84,6 +84,18 @@ div.modal {
   }
 }
 
+.booking-item {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  padding: 5px 8px;
+  float: left;
+  margin: 0 5px;
+  .close {
+    margin-top: -3px;
+    margin-left: 5px;
+  }
+}
+
 @keyframes sk-bouncedelay {
   0%, 80%, 100% {
     transform: scale(0);

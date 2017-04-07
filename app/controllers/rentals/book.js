@@ -66,7 +66,7 @@ export default Ember.Controller.extend({
     })
   },
 
-  bookings: computed('rental.bookings', function() {
+  bookings: computed('rental.bookings.[]', function() {
     return this.get('rental.bookings').filter((booking)=> !booking.get('isNew'))
   }),
 
@@ -99,24 +99,40 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+
+    destroyBooking(booking) {
+      this.set('isLoading', true)
+      booking.destroyRecord()
+        .then(()=> {
+          this.get('notification').success('Removed Booking Successfully!')
+        })
+        .catch((e)=> {
+          console.error(e)
+          this.get('notification').error('Something Went Wrong, we are working on it')
+        })
+        .finally(()=> {
+          this.set('isLoading', false)
+        })
+    },
+
     setRange(range) {
       this.set('range', range)
       this.calculatePrice()
     },
 
     book() {
-      this.set('isSaving', true)
+      this.set('isLoading', true)
       this.get('booking').save()
         .then(()=> {
-          this.get('notification').success('Saved successfully!')
+          this.get('notification').success('Saved Successfully!')
           this.transitionToRoute('rentals')
         })
         .catch((e)=> {
           console.error(e)
-          this.get('notification').error('Something went wrong, we are working on it')
+          this.get('notification').error('Something Went Wrong, we are working on it')
         })
         .finally(()=> {
-          this.set('isSaving', false)
+          this.set('isLoading', false)
         })
     },
 
