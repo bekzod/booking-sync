@@ -73,6 +73,7 @@ export default Ember.Controller.extend({
   // big hack
   drawCalendarItems() {
     let bookHash = this.get('disabledDates.bookHash')
+    $('.ember-power-calendar-day').removeClass('full-day second-half first-half')
     for (let key in bookHash) {
       let { afterTwelve, beforeTwelve, fullDay } = bookHash[key]
         let el = $(`[data-date="${key}"]`)
