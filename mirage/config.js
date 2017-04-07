@@ -6,9 +6,11 @@ export default function() {
   this.post('/rentals');
   this.get('/rentals/:id');
   this.del('/rentals/:id');
+  this.patch('/rentals/:id');
 
   this.get('/bookings');
   this.post('/bookings');
   this.get('/bookings/:id');
   this.del('/bookings/:id');
+  this.patch('/bookings/:id');
 }
