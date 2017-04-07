@@ -75,7 +75,7 @@ export default Ember.Controller.extend({
       let startAt = booking.get('startAt')
       let endAt = booking.get('endAt')
       let date = moment(startAt)
-      while (date.isBefore(endAt) || date.isSame(endAt, 'day')) {
+      while (date.isBefore(endAt)) {
         dates.push(date.toDate())
         date.add(1, 'day')
       }
