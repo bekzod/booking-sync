@@ -14,7 +14,7 @@
       </div>
       <div class="modal-body text-center">
         <h4>Daily Rate ${{rental.dailyRate}}</h4>
-        <h4>Price ${{booking.price}} for <span class='days'>{{days}} days</span></h4>
+        <h4>Price ${{booking.price}} for <span class='days'>{{booking.days}} days</span></h4>
         <h5>{{#if booking.startAt}}From {{moment-format booking.startAt 'YYYY MMM DD'}}{{/if}} {{#if booking.endAt}}to {{moment-format booking.endAt 'MMM DD'}}{{/if}}&nbsp;</h5>
         <div class="row">
           <div class="form-group col-md-6 col-md-offset-3 {{if booking.clientEmail.length (if isEmailValid 'has-success' 'has-error')}}">
@@ -32,10 +32,21 @@
               {{calendar.days disabled=true minDate=minDate disabledDates=disabledDates}}
           {{/power-calendar-range}}
         </div>
+
+        {{#if bookings.length}}
+          <div class="row">
+            <h4>All Bookings</h4>
+            {{#each bookings as |booking|}}
+              <div class="booking-item">
+
+              </div>
+            {{/each}}
+          </div>
+        {{/if}}
       </div>
       <div class="modal-footer">
         <button disabled={{isSaving}} onclick={{action 'close'}} class="btn btn-default">Cancel</button>
-        <button disabled={{not (and days isEmailValid)}} onclick={{action 'book'}} class="btn btn-primary">Book</button>
+        <button disabled={{not (and booking.days isEmailValid)}} onclick={{action 'book'}} class="btn btn-primary">Book</button>
       </div>
       {{#if isSaving}}
         <div class="loading-spinner">

@@ -56,7 +56,7 @@ export default Ember.Controller.extend({
 
   validateRange(start, end) {
     if (!start || !end) { return true }
-    let bookings = this.get('rental.bookings')
+    let bookings = this.get('bookings')
     let startAt = moment(start)
     let endAt = moment(end)
     return !bookings.any(function(booking) {
@@ -66,16 +66,18 @@ export default Ember.Controller.extend({
     })
   },
 
-  disabledDates: computed('rental.bookings', function() {
-    return this.get('rental.bookings').reduce(function(dates, booking) {
-      if (!booking.get('isNew')) {
-        let startAt = booking.get('startAt')
-        let endAt = booking.get('endAt')
-        let date = moment(startAt)
-        while (date.isBefore(endAt) || date.isSame(endAt, 'day')) {
-          dates.push(date.toDate())
-          date.add(1, 'day')
-        }
+  bookings: computed('rental.bookings', function() {
+    return this.get('rental.bookings').filter((booking)=> !booking.get('isNew'))
+  }),
+
+  disabledDates: computed('bookings', function() {
+    return this.get('bookings').reduce(function(dates, booking) {
+      let startAt = booking.get('startAt')
+      let endAt = booking.get('endAt')
+      let date = moment(startAt)
+      while (date.isBefore(endAt) || date.isSame(endAt, 'day')) {
+        dates.push(date.toDate())
+        date.add(1, 'day')
       }
       return dates
     }, []).sort((a,b)=> a - b);
