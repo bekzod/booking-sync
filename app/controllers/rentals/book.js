@@ -41,10 +41,27 @@ export default Ember.Controller.extend({
     },
     set(key, val) {
       let { start, end } = val
-      this.get('booking').setProperties({ startAt: start, endAt: end })
-      return val
+      if (this.validateRange(start, end)) {
+        this.get('booking').setProperties({ startAt: start, endAt: end })
+        return val
+      } else {
+        this.get('notification').warning('Booking dates cannot overlap')
+        return { end: null, start: null }
+      }
     }
   }),
+
+  validateRange(start, end) {
+    if (!start || !end) { return true }
+    let bookings = this.get('rental.bookings')
+    let startAt = moment(start)
+    let endAt = moment(end)
+    return !bookings.any(function(booking) {
+      let bookingStart = booking.get('startAt')
+      let bookingEnd = booking.get('endAt')
+      return startAt.isBefore(bookingStart) && endAt.isAfter(bookingEnd)
+    })
+  },
 
   disabledDates: computed('rental.bookings', function() {
     return this.get('rental.bookings').reduce(function(dates, booking) {
@@ -52,7 +69,7 @@ export default Ember.Controller.extend({
         let startAt = booking.get('startAt')
         let endAt = booking.get('endAt')
         let date = moment(startAt)
-        while (date.isBefore(endAt)) {
+        while (date.isBefore(endAt) || date.isSame(endAt, 'day')) {
           dates.push(date.toDate())
           date.add(1, 'day')
         }
