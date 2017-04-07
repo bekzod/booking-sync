@@ -90,6 +90,10 @@ div.modal {
   padding: 5px 8px;
   float: left;
   margin: 5px;
+  cursor: pointer;
+  &.selected {
+    background-color: #c9e9ff;
+  }
   .close {
     margin-top: -3px;
     margin-left: 5px;

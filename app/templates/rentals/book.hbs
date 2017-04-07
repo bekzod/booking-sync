@@ -14,11 +14,11 @@
       </div>
       <div class="modal-body text-center">
         <h4>Daily Rate ${{rental.dailyRate}}</h4>
-        <h4>Price ${{booking.price}} for <span class='days'>{{booking.days}} days</span></h4>
-        <h5>{{#if booking.startAt}}From {{moment-format booking.startAt 'YYYY MMM DD'}}{{/if}} {{#if booking.endAt}}to {{moment-format booking.endAt 'MMM DD'}}{{/if}}&nbsp;</h5>
+        <h4>Price ${{selectedBooking.price}} for <span class='days'>{{selectedBooking.days}} days</span></h4>
+        <h5>{{#if selectedBooking.startAt}}From {{moment-format selectedBooking.startAt 'YYYY MMM DD'}}{{/if}} {{#if selectedBooking.endAt}}to {{moment-format selectedBooking.endAt 'MMM DD'}}{{/if}}&nbsp;</h5>
         <div class="row">
-          <div class="form-group col-md-6 col-md-offset-3 {{if booking.clientEmail.length (if isEmailValid 'has-success' 'has-error')}}">
-            <input disabled={{isLoading}} type="text" class="form-control" placeholder="Email" value={{booking.clientEmail}} oninput={{action (mut booking.clientEmail) value="target.value"}} >
+          <div class="form-group col-md-6 col-md-offset-3 {{if selectedBooking.clientEmail.length (if isEmailValid 'has-success' 'has-error')}}">
+            <input disabled={{isLoading}} type="text" class="form-control" placeholder="Email" value={{selectedBooking.clientEmail}} oninput={{action (mut selectedBooking.clientEmail) value="target.value"}} >
           </div>
         </div>
         <div class="row">
@@ -33,11 +33,11 @@
           {{/power-calendar-range}}
         </div>
 
-        {{#if bookings.length}}
+        {{#if rental.bookings.length}}
           <div class="row">
             <h4>All Bookings</h4>
-            {{#each bookings as |booking|}}
-              <div class="booking-item">
+            {{#each rental.bookings as |booking|}}
+              <div class="booking-item {{if (eq booking.id selectedBookingId) 'selected'}}" onclick={{action 'editBooking' booking}}>
                 <span class='date'>{{moment-format booking.startAt 'YYYY MMM DD'}}</span> -
                 <span class='date'>{{moment-format booking.endAt 'YYYY MMM DD'}}</span> ({{booking.days}} days)
                 <button disabled={{isLoading}} type="button" onclick={{action 'destroyBooking' booking}} class="close"><span>×</span></button>
@@ -48,7 +48,7 @@
       </div>
       <div class="modal-footer">
         <button disabled={{isLoading}} onclick={{action 'close'}} class="btn btn-default">Cancel</button>
-        <button disabled={{not (and booking.days isEmailValid)}} onclick={{action 'book'}} class="btn btn-primary">Book</button>
+        <button disabled={{not (and selectedBooking.days isEmailValid)}} onclick={{action 'book'}} class="btn btn-primary">Book</button>
       </div>
       {{#if isLoading}}
         <div class="loading-spinner">

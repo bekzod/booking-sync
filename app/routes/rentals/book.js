@@ -14,10 +14,14 @@ export default Ember.Route.extend({
 
   resetController(controller, isExiting) {
     if (isExiting) {
-      let booking = controller.get('booking')
-      if (booking && booking.get('isNew')) {
-        booking.destroyRecord()
-      }
+      controller.get('rental.bookings').forEach(function(booking) {
+        if (booking.get('isNew')) {
+          booking.destroyRecord()
+        } else {
+          booking.rollbackAttributes()
+        }
+      })
+      controller.set('selectedBookingId', null)
     }
   }
 

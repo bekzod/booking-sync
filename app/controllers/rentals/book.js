@@ -8,6 +8,25 @@ const { computed, inject, run, $ } = Ember
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 export default Ember.Controller.extend({
+  queryParams: {
+    selectedBookingId: {
+      as: 'bookingId'
+    }
+  },
+
+  selectedBookingId: null,
+
+  selectedBooking: computed('selectedBookingId', 'booking', function() {
+    let selectedBookingId = this.get('selectedBookingId')
+    if (selectedBookingId) {
+      let booking = this.get('rental.bookings').findBy('id', selectedBookingId)
+      if (booking) {
+        return booking
+      }
+    }
+    return this.get('booking')
+  }),
+
   notification: inject.service('notification-messages'),
 
   minDate: moment().startOf('day'),
@@ -29,13 +48,13 @@ export default Ember.Controller.extend({
     }
   }),
 
-  isEmailValid: computed('booking.clientEmail', function() {
-    return EMAIL_REGEX.test(this.get('booking.clientEmail'))
+  isEmailValid: computed('selectedBooking.clientEmail', function() {
+    return EMAIL_REGEX.test(this.get('selectedBooking.clientEmail'))
   }),
 
-  range: computed('booking.startAt', 'booking.endAt', {
+  range: computed('selectedBooking.startAt', 'selectedBooking.endAt', {
     get() {
-      let booking = this.get('booking')
+      let booking = this.get('selectedBooking')
       return {
         start: booking.get('startAt'),
         end: booking.get('endAt')
@@ -44,7 +63,7 @@ export default Ember.Controller.extend({
     set(key, val) {
       let { start, end } = val
       if (this.validateRange(start, end)) {
-        this.get('booking').setProperties({ startAt: start, endAt: end })
+        this.get('selectedBooking').setProperties({ startAt: start, endAt: end })
         return val
       } else {
         this.get('notification').warning('Booking dates cannot overlap')
@@ -66,8 +85,10 @@ export default Ember.Controller.extend({
     })
   },
 
-  bookings: computed('rental.bookings.[]', function() {
-    return this.get('rental.bookings').filter((booking)=> !booking.get('isNew'))
+  bookings: computed('rental.bookings.[]', 'selectedBooking', function() {
+    let selectedBooking = this.get('selectedBooking')
+    return this.get('rental.bookings')
+      .filter((booking)=> booking !== selectedBooking)
   }),
 
   // big hack
@@ -87,7 +108,7 @@ export default Ember.Controller.extend({
     }
   },
 
-  disabledDates: computed('bookings', function() {
+  disabledDates: computed('bookings.[]', function() {
     let bookHash = {}
     let dates = this.get('bookings').reduce(function(dates, booking) {
       let startAt = booking.get('startAt')
@@ -130,22 +151,22 @@ export default Ember.Controller.extend({
     return { dates, bookHash }
   }),
 
-  days: computed('booking.startAt', 'booking.endAt', function() {
-    let days = 0
-    let booking = this.get('booking')
-    let { startAt, endAt } = booking.getProperties('startAt', 'endAt')
-    if (startAt !== null && endAt !== null) {
-      days = moment(endAt).diff(startAt, 'days')
-    }
-    return days
-  }),
-
   calculatePrice() {
-    let price = this.get('days') * this.get('rental.dailyRate')
-    this.set('booking.price', price)
+    let price = this.get('selectedBooking.days') * this.get('rental.dailyRate')
+    this.set('selectedBooking.price', price)
   },
 
   actions: {
+
+    editBooking(booking) {
+      this.set('selectedBookingId', booking.get('id'))
+      let { startAt, endAt } = booking.getProperties('startAt', 'endAt')
+      run.next(this, function() {
+        this.set('center', booking.get('startAt'))
+        this.set('range', { start: startAt, end: endAt })
+        this.calculatePrice()
+      })
+    },
 
     destroyBooking(booking) {
       this.set('isLoading', true)
@@ -170,7 +191,7 @@ export default Ember.Controller.extend({
 
     book() {
       this.set('isLoading', true)
-      this.get('booking').save()
+      this.get('selectedBooking').save()
         .then(()=> {
           this.get('notification').success('Saved Successfully!')
           this.transitionToRoute('rentals')
