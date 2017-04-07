@@ -1,5 +1,7 @@
 import Ember from 'ember';
 import moment from 'moment';
+import { animate } from 'ember-animatable';
+
 
 const { computed, inject } = Ember
 
@@ -46,6 +48,7 @@ export default Ember.Controller.extend({
         return val
       } else {
         this.get('notification').warning('Booking dates cannot overlap')
+        animate('.ember-power-calendar', 'shake')
         return { end: null, start: null }
       }
     }

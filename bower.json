@@ -1,5 +1,6 @@
 {
   "name": "booking-sync",
   "dependencies": {
+    "animate.css": "~3.4.0"
   }
 }
