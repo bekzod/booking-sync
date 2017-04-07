@@ -89,10 +89,41 @@ div.modal {
   border: 1px solid #ccc;
   padding: 5px 8px;
   float: left;
-  margin: 0 5px;
+  margin: 5px;
   .close {
     margin-top: -3px;
     margin-left: 5px;
+  }
+}
+
+button.ember-power-calendar-day {
+  position: relative;
+  display: block;
+  &:before {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    opacity: .8;
+    height: 50%;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #ddd;
+  }
+
+  &.first-half:before {
+    content: ' ';
+  }
+  &.full-day:before {
+    content: ' ';
+    bottom: 0;
+    top: 0;
+    height: 100%;
+  }
+  &.second-half:before {
+    content: ' ';
+    bottom: 0;
+    top: auto;
   }
 }
 

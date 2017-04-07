@@ -29,7 +29,7 @@
             onCenterChange=(action (mut center) value="date")
             onSelect=(action 'setRange' value="date") as |calendar|}}
               {{calendar.nav}}
-              {{calendar.days disabled=true minDate=minDate disabledDates=disabledDates}}
+              {{calendar.days disabled=true minDate=minDate disabledDates=disabledDates.dates}}
           {{/power-calendar-range}}
         </div>
 
