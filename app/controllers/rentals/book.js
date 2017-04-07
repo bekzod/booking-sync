@@ -160,9 +160,9 @@ export default Ember.Controller.extend({
 
     editBooking(booking) {
       this.set('selectedBookingId', booking.get('id'))
-      let { startAt, endAt } = booking.getProperties('startAt', 'endAt')
       run.next(this, function() {
         this.set('center', booking.get('startAt'))
+        let { startAt, endAt } = booking.getProperties('startAt', 'endAt')
         this.set('range', { start: startAt, end: endAt })
         this.calculatePrice()
       })
